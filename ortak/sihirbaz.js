@@ -297,6 +297,28 @@
     if (not) not.textContent = t.textContent.trim() + ' tam sürümde çalışır. Demoda Randevu Sihirbazı, Cilt Tipi Testi ve asistan açıktır.';
   });
 
+  /* ---------- Demoda hazır olmayan iç sayfalar: sayfa başına atmak yerine kısa bildirim ---------- */
+  var bildirim = document.createElement('div');
+  bildirim.className = 'sb-bildirim';
+  bildirim.setAttribute('role', 'status');
+  document.body.appendChild(bildirim);
+  var bildirimSayac;
+  function bildir(metin) {
+    (dlg.open ? dlg : document.body).appendChild(bildirim);
+    bildirim.textContent = metin;
+    bildirim.getBoundingClientRect();
+    bildirim.classList.add('acik');
+    clearTimeout(bildirimSayac);
+    bildirimSayac = setTimeout(function () { bildirim.classList.remove('acik'); }, 3400);
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('a[href="#"], a[href="#kvkk"]');
+    if (!a || a.matches('[data-randevu],[data-asistan],[data-yakinda]')) return;
+    e.preventDefault();
+    if (a.classList.contains('logo')) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    bildir('Bu sayfa tam sürümde açılır. Demoda yalnız ana sayfa hazır.');
+  });
+
   /* ---------- Menü ---------- */
   document.querySelectorAll('[data-menu-ac]').forEach(function (b) {
     b.addEventListener('click', function () {

@@ -16,7 +16,7 @@
 
 /* Randevu penceresi */
 .sb-dlg{width:min(100% - 2rem,35rem);max-height:calc(100dvh - 2rem);padding:0;border:0;border-radius:var(--s-rad);background:var(--s-yuzey);color:var(--s-metin);font-family:var(--s-font);box-shadow:0 24px 60px rgba(11,11,13,.28)}
-.sb-dlg::backdrop{background:rgba(11,11,13,.5);backdrop-filter:blur(3px)}
+.sb-dlg::backdrop{background:rgba(11,11,13,.5);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 .sb-dlg[open]{animation:sb-dlg .24s cubic-bezier(.2,.8,.3,1)}
 .sb-dlg[open]::backdrop{animation:sb-fon .2s ease}
 @keyframes sb-dlg{from{opacity:0;transform:translateY(10px)}}
@@ -103,21 +103,25 @@
 .sb-balon--ben{justify-self:end;background:var(--s-koyu);color:#fff}
 .sb-cipler{display:grid;gap:.375rem}
 .sb-cip{padding:.5rem .875rem;font:inherit;font-size:.9375rem;line-height:1.35;text-align:left;color:var(--s-metin);background:var(--s-zemin-2);border:0;border-radius:var(--s-cip-rad,0);cursor:pointer;transition:background-color .14s ease,color .14s ease}
-.sb-cip:hover{background:var(--s-koyu);color:#fff}
+@media (hover:hover){.sb-cip:hover{background:var(--s-koyu);color:#fff}}
 .sb-as__alt{padding:.75rem 1rem;border-top:1px solid var(--s-cizgi);font-size:.875rem;line-height:1.45;color:var(--s-ikincil)}
 .sb-as__izin p{margin:0 0 .75rem;line-height:1.5;font-size:.9375rem}
 .sb-as__izin .sb-eylem{margin-top:.5rem;justify-content:flex-start}
 
+.sb-bildirim{position:fixed;left:50%;bottom:1.5rem;z-index:40;width:max-content;max-width:calc(100vw - 2rem);padding:.625rem 1rem;font-family:var(--s-font);font-size:.9375rem;line-height:1.4;text-align:center;color:#fff;background:var(--s-koyu);border-radius:var(--s-cip-rad,0);box-shadow:0 12px 30px rgba(11,11,13,.28);opacity:0;visibility:hidden;transform:translate(-50%,8px);transition:opacity .18s ease,transform .18s ease,visibility .18s;pointer-events:none}
+.sb-bildirim.acik{opacity:1;visibility:visible;transform:translate(-50%,0)}
+
 /* Telefon alt çubuğu */
 .sb-cubuk{display:none}
 @media (max-width:767px){
-  body{padding-bottom:4rem}
-  .sb-cubuk{position:fixed;left:0;right:0;bottom:0;z-index:29;display:grid;grid-template-columns:repeat(3,1fr);background:var(--s-koyu);border-top:1px solid rgba(255,255,255,.16)}
+  body{padding-bottom:calc(4rem + env(safe-area-inset-bottom))}
+  .sb-cubuk{position:fixed;left:0;right:0;bottom:0;z-index:29;display:grid;grid-template-columns:repeat(3,1fr);padding-bottom:env(safe-area-inset-bottom);background:var(--s-koyu);border-top:1px solid rgba(255,255,255,.16)}
   .sb-cubuk a,.sb-cubuk button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.125rem;min-height:4rem;padding:.25rem;font-family:var(--s-font);font-size:.875rem;line-height:1.2;color:#fff;background:none;border:0;text-decoration:none;cursor:pointer}
   .sb-cubuk i{font-size:1.25rem}
   .sb-cubuk button{background:var(--s-vurgu)}
-  .sb-as-ac{bottom:4.75rem;right:.75rem;min-height:2.75rem;padding:.375rem .875rem}
-  .sb-as{right:.5rem;left:.5rem;width:auto;bottom:4.5rem;max-height:calc(100dvh - 6rem)}
+  .sb-as-ac{bottom:calc(4.75rem + env(safe-area-inset-bottom));right:.75rem;min-height:2.75rem;padding:.375rem .875rem}
+  .sb-as{right:.5rem;left:.5rem;width:auto;bottom:calc(4.5rem + env(safe-area-inset-bottom));max-height:calc(100dvh - 6rem)}
+  .sb-bildirim{bottom:calc(8.25rem + env(safe-area-inset-bottom))}
   .sb-dlg__ic{padding:1.25rem}
   .sb-sec{grid-template-columns:1fr}
 }
