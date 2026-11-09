@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Akgül Ana Sayfa Yönleri</title>
+<style>
+  :root{--z:#EDEDEF;--m:#16171A;--i:#55565C;--c:#CFCFD3}
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{display:flex;flex-direction:column;background:var(--z);color:var(--m);font:400 15px/1.4 system-ui,'Segoe UI',sans-serif}
+  .cubuk{flex:none;display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1rem;padding:.5rem 1rem;background:#fff;border-bottom:1px solid var(--c)}
+  .cubuk b{font-weight:600;margin-right:auto}
+  .kume{display:inline-flex;border:1px solid var(--c)}
+  .kume button{padding:.4375rem .875rem;font:inherit;color:var(--m);background:#fff;border:0;border-left:1px solid var(--c);cursor:pointer}
+  .kume button:first-child{border-left:0}
+  .kume button[aria-pressed="true"]{background:var(--m);color:#fff}
+  .kume button:focus-visible{outline:2px solid #B3122A;outline-offset:-2px}
+  .sahne{flex:1;min-height:0;display:grid;gap:1px;background:var(--c);overflow:hidden}
+  .pano{position:relative;min-width:0;min-height:0;display:flex;flex-direction:column;background:var(--z);overflow:hidden}
+  .pano h2{flex:none;margin:0;padding:.375rem .75rem;font-size:14px;font-weight:600;background:#fff;border-bottom:1px solid var(--c)}
+  .pano h2 a{float:right;font-weight:400;color:var(--i)}
+  .kare{position:relative;flex:1;min-height:0;overflow:hidden}
+  iframe{position:absolute;left:0;top:0;border:0;background:#fff;transform-origin:0 0}
+  .sahne[data-mod="yan"]{grid-template-columns:1fr 1fr}
+  .sahne[data-mod="b"]{grid-template-columns:1fr}.sahne[data-mod="b"] .pano-c{display:none}
+  .sahne[data-mod="c"]{grid-template-columns:1fr}.sahne[data-mod="c"] .pano-b{display:none}
+  @media (max-width:640px){.sahne[data-mod="yan"]{grid-template-columns:1fr;grid-template-rows:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="cubuk">
+  <b>Dr. Oğuzhan Akgül: ana sayfa yönleri</b>
+  <div class="kume" role="group" aria-label="Görünüm">
+    <button type="button" data-mod="yan" aria-pressed="true">Yan yana</button>
+    <button type="button" data-mod="b" aria-pressed="false">Yön B</button>
+    <button type="button" data-mod="c" aria-pressed="false">Yön C</button>
+  </div>
+  <div class="kume" role="group" aria-label="Ekran">
+    <button type="button" data-ekran="1440" aria-pressed="true">Masaüstü</button>
+    <button type="button" data-ekran="390" aria-pressed="false">Telefon</button>
+  </div>
+</div>
+<div class="sahne" data-mod="yan">
+  <section class="pano pano-b"><h2>B · Siyah Künye <a href="yon-b/index.html" target="_blank" rel="noopener">Tam ekran aç</a></h2><div class="kare"><iframe src="yon-b/index.html" title="Yön B Siyah Künye"></iframe></div></section>
+  <section class="pano pano-c"><h2>C · Gri Taş <a href="yon-c/index.html" target="_blank" rel="noopener">Tam ekran aç</a></h2><div class="kare"><iframe src="yon-c/index.html" title="Yön C Gri Taş"></iframe></div></section>
+</div>
+<script>
+(function(){
+  var sahne=document.querySelector('.sahne'),ekran=1440;
+  function yerlestir(){
+    document.querySelectorAll('.kare').forEach(function(k){
+      var f=k.querySelector('iframe'),G=k.clientWidth,Y=k.clientHeight;
+      if(!G||!Y)return;
+      var o=Math.min(1,G/ekran);
+      f.style.width=ekran+'px';
+      f.style.height=Math.ceil(Y/o)+'px';
+      f.style.transform='scale('+o+')';
+      f.style.left=(G>ekran*o?Math.round((G-ekran*o)/2):0)+'px';
+    });
+  }
+  document.querySelector('.cubuk').addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b)return;
+    b.parentNode.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});
+    if(b.dataset.mod)sahne.dataset.mod=b.dataset.mod;
+    if(b.dataset.ekran)ekran=+b.dataset.ekran;
+    yerlestir();
+  });
+  new ResizeObserver(yerlestir).observe(sahne);
+  yerlestir();
+})();
+</script>
+</body>
+</html>
