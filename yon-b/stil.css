@@ -1,6 +1,6 @@
 /* YÖN B · SİYAH KÜNYE
    Kaynak: Instagram öne çıkan kapakları (siyah daire, beyaz logo, ince çizgi ikon) ve reels kırmızısı.
-   Köşe kuralı: düğmeler hap, konu simgeleri daire, diğer her yüzey köşesiz.
+   Köşe kuralı: düğmeler ve seçenekler hap, konu simgeleri daire, giriş alanları ve pencere yumuşak köşeli, sayfa yüzeyleri köşesiz.
    Siyah yalnız üst bant ve altbilgide; kırmızı yalnız ana düğmede. */
 :root{
   --siyah:#0B0B0D;--siyah-2:#17171A;--beyaz:#FDFDFD;--gri:#F2F2F3;--cizgi:#DCDCDF;--sinir:#85858C;
@@ -8,7 +8,8 @@
   --s-font:'Readex Pro',system-ui,sans-serif;--s-baslik:'Readex Pro',system-ui,sans-serif;--s-baslik-agir:400;
   --s-vurgu:var(--kirmizi);--s-vurgu-koyu:var(--kirmizi-koyu);--s-metin:var(--metin);--s-ikincil:var(--ikincil);
   --s-cizgi:var(--cizgi);--s-sinir:var(--sinir);--s-yuzey:var(--beyaz);--s-zemin-2:var(--gri);--s-koyu:var(--siyah);--s-hata:#AE0E25;
-  --s-rad:0;--s-dgm-rad:999px;
+  --s-rad:0;--s-dgm-rad:999px;--s-cip-rad:999px;--s-onay-rad:.4375rem;
+  --s-isaret-resim:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.500l3.200 3.200L15 6.800' fill='none' stroke='%23fff' stroke-width='1.600' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:5.5rem;-webkit-text-size-adjust:100%}
@@ -115,8 +116,8 @@ h2{font-size:clamp(1.625rem,1.3rem + 1vw,2.125rem);line-height:1.2}
 .yabanci{padding:1.75rem;background:var(--gri)}
 .yabanci p{margin:.75rem 0 1.25rem;line-height:1.55;color:#2C2C31}
 .diller{display:flex;flex-wrap:wrap;gap:.5rem;margin:0;padding:0;list-style:none}
-.diller a{display:inline-flex;align-items:center;min-height:2.5rem;padding:.25rem .875rem;font-weight:400;font-size:.9688rem;text-decoration:none;background:var(--beyaz);border:1px solid var(--cizgi);border-radius:999px;transition:border-color .16s ease}
-.diller a:hover{border-color:var(--metin)}
+.diller a{display:inline-flex;align-items:center;min-height:2.5rem;padding:.25rem 1rem;font-weight:400;font-size:.9688rem;text-decoration:none;background:var(--beyaz);border-radius:999px;transition:background-color .16s ease,color .16s ease}
+.diller a:hover{background:var(--siyah);color:#fff}
 
 /* Altbilgi */
 .alt{padding-block:3.5rem 2.25rem;background:var(--siyah);color:#fff}
@@ -128,6 +129,24 @@ h2{font-size:clamp(1.625rem,1.3rem + 1vw,2.125rem);line-height:1.2}
 .alt__yasal{padding-top:1.5rem;font-size:.9063rem;line-height:1.55;color:var(--koyu-ikincil)}
 .alt__yasal p{margin:0 0 .375rem}
 .alt__yasal a{color:#fff}
+
+/* Seçim ve giriş alanları: hap biçimi, kenarlıksız yumuşak dolgu */
+.sb-dlg{border-radius:1.5rem}
+.sb-sec{display:flex;flex-wrap:wrap;gap:.5rem}
+.sb-sec__kutu{gap:0;min-height:2.875rem;padding:.5rem 1.125rem;background:var(--gri);border-radius:999px}
+.sb-sec label:hover .sb-sec__kutu{background:#E5E5E8}
+.sb-isaret{width:0;height:1.125rem}
+.sb-sec input:checked + .sb-sec__kutu{background:var(--siyah);color:#fff}
+.sb-sec input:checked + .sb-sec__kutu .sb-isaret{width:1.125rem;margin-right:.4375rem}
+.sb-test .sb-sec{display:grid}
+.sb-test .sb-sec__kutu{flex-direction:row-reverse;justify-content:space-between;gap:.75rem;min-height:3.25rem;padding:.5rem .625rem .5rem 1.25rem}
+.sb-test .sb-isaret{width:1.875rem;height:1.875rem;background:var(--beyaz);border-radius:50%}
+.sb-test .sb-isaret::after{inset:.25rem}
+.sb-test input:checked + .sb-sec__kutu .sb-isaret{width:1.875rem;margin-right:0;background:rgba(255,255,255,.14)}
+.sb-alan input{padding:.625rem 1.125rem;background:var(--gri);border-radius:1rem;box-shadow:inset 0 0 0 1px #CFCFD4}
+.sb-alan input:hover{box-shadow:inset 0 0 0 1px var(--sinir)}
+.sb-alan input:focus{background:var(--beyaz);box-shadow:inset 0 0 0 1.5px var(--siyah)}
+.sb-alan input[aria-invalid="true"]{background:var(--beyaz);box-shadow:inset 0 0 0 1.5px var(--s-hata)}
 
 /* Dar masaüstü */
 @media (max-width:1240px){

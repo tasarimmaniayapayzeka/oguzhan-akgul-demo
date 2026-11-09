@@ -14,9 +14,13 @@
   }
   function secenekler(ad, liste, secili) {
     return '<div class="sb-sec">' + liste.map(function (v) {
-      return '<label><input type="radio" name="' + ad + '" value="' + kacis(v) + '"' + (secili === v ? ' checked' : '') + '><span>' + kacis(v) + '</span></label>';
+      return '<label><input type="radio" name="' + ad + '" value="' + kacis(v) + '"' + (secili === v ? ' checked' : '') + '>' + kutu(kacis(v)) + '</label>';
     }).join('') + '</div>';
   }
+  function kutu(yazi) {
+    return '<span class="sb-sec__kutu"><i class="sb-isaret" aria-hidden="true"></i><span class="sb-sec__yazi">' + yazi + '</span></span>';
+  }
+  var GERI = '<button type="button" class="sb-geri" data-geri><i class="ph-light ph-arrow-left" aria-hidden="true"></i>Geri</button>';
 
   /* ---------- Randevu Sihirbazı ---------- */
   var dlg = document.createElement('dialog');
@@ -39,13 +43,13 @@
       baslik = 'Görüşme nasıl olsun?';
       govde = '<fieldset class="sb-grup"><legend>Görüşme şekli</legend>' + secenekler('sekil', SEKILLER, v.sekil) + hataYaz('sekil') + '</fieldset>' +
         '<fieldset class="sb-grup"><legend>Size uygun zaman</legend>' + secenekler('zaman', ZAMANLAR, v.zaman) + hataYaz('zaman') + '</fieldset>';
-      eylem = '<div class="sb-eylem"><button type="button" class="sb-dgm sb-dgm--iki" data-geri>Geri</button><button type="submit" class="sb-dgm sb-dgm--bir">Devam edin</button></div>';
+      eylem = '<div class="sb-eylem">' + GERI + '<button type="submit" class="sb-dgm sb-dgm--bir">Devam edin</button></div>';
     } else if (adim === 3) {
       baslik = 'Size nasıl ulaşalım?';
       govde = alan('ad', 'Ad soyad', 'text', 'name') + alan('tel', 'Telefon', 'tel', 'tel') + alan('eposta', 'E-posta (isteğe bağlı)', 'email', 'email') +
         '<label class="sb-onay"><input type="checkbox" name="aydinlatma"' + (v.aydinlatma ? ' checked' : '') + '><span><a href="#kvkk">Aydınlatma metnini</a> okudum.</span></label>' + hataYaz('aydinlatma') +
         '<label class="sb-onay"><input type="checkbox" name="riza"' + (v.riza ? ' checked' : '') + '><span>Talebimdeki sağlık bilgilerinin randevu planlaması için işlenmesine açık rıza veriyorum.</span></label>' + hataYaz('riza');
-      eylem = '<div class="sb-eylem"><button type="button" class="sb-dgm sb-dgm--iki" data-geri>Geri</button><button type="submit" class="sb-dgm sb-dgm--bir">Talebi gönderin</button></div>';
+      eylem = '<div class="sb-eylem">' + GERI + '<button type="submit" class="sb-dgm sb-dgm--bir">Talebi gönderin</button></div>';
     } else {
       baslik = 'Talebiniz alındı';
       govde = '<p>Teşekkürler, ' + kacis(v.ad) + '. Ekibimiz sizi tercih ettiğiniz zaman aralığında arayarak görüşmeyi planlayacak.</p>' +
@@ -120,7 +124,71 @@
     });
     f.elements.konu && (f.elements.konu.innerHTML = '<option value="">Seçiniz</option>' + KONULAR.map(function (k) { return '<option>' + k + '</option>'; }).join(''));
     f.elements.zaman && (f.elements.zaman.innerHTML = '<option value="">Seçiniz</option>' + ZAMANLAR.map(function (k) { return '<option>' + k + '</option>'; }).join(''));
+    f.querySelectorAll('select').forEach(acilirKur);
   });
+
+  /* Özel açılır liste: asıl değer gizli select'te kalır, klavyeyle de çalışır */
+  function acilirKur(sel) {
+    var etiket = document.querySelector('label[for="' + sel.id + '"]');
+    var kok = document.createElement('div'); kok.className = 'sb-acilir';
+    var dgmId = sel.id + '-dgm', listeId = sel.id + '-liste';
+    kok.innerHTML = '<button type="button" class="sb-acilir__dgm" id="' + dgmId + '" aria-haspopup="listbox" aria-expanded="false" aria-controls="' + listeId + '"><span></span><i class="ph-light ph-caret-down" aria-hidden="true"></i></button>' +
+      '<ul class="sb-acilir__liste" id="' + listeId + '" role="listbox" tabindex="-1" hidden></ul>';
+    sel.classList.add('sb-gizli'); sel.tabIndex = -1; sel.setAttribute('aria-hidden', 'true');
+    sel.parentNode.insertBefore(kok, sel.nextSibling);
+    var dgm = kok.querySelector('button'), yazi = dgm.querySelector('span'), liste = kok.querySelector('ul');
+    if (etiket) { etiket.htmlFor = dgmId; etiket.id = etiket.id || sel.id + '-etiket'; dgm.setAttribute('aria-labelledby', etiket.id + ' ' + dgmId); liste.setAttribute('aria-labelledby', etiket.id); }
+    var secenek = Array.prototype.slice.call(sel.options), etkin = 0;
+    /* "Seçiniz" yalnız düğmede yazar, listede tekrar etmez: satır n, seçenek n + bas demektir */
+    var bas = secenek[0] && !secenek[0].value ? 1 : 0;
+    liste.innerHTML = secenek.slice(bas).map(function (o, i) {
+      return '<li class="sb-acilir__sec" role="option" id="' + sel.id + '-s' + i + '" data-i="' + i + '" aria-selected="false">' + kacis(o.textContent) + '</li>';
+    }).join('');
+    var satir = Array.prototype.slice.call(liste.children);
+    function yansit() {
+      yazi.textContent = secenek[sel.selectedIndex].textContent;
+      if (sel.value) dgm.removeAttribute('data-bos'); else dgm.setAttribute('data-bos', '');
+      satir.forEach(function (s, n) { s.setAttribute('aria-selected', n + bas === sel.selectedIndex && sel.value ? 'true' : 'false'); });
+    }
+    function isaretle(i) {
+      etkin = i;
+      satir.forEach(function (s, n) { s.classList.toggle('etkin', n === i); });
+      liste.setAttribute('aria-activedescendant', satir[i].id);
+      satir[i].scrollIntoView({ block: 'nearest' });
+    }
+    function ac() {
+      liste.hidden = false; liste.classList.remove('yukari');
+      dgm.setAttribute('aria-expanded', 'true'); kok.parentNode.classList.add('acik');
+      liste.style.maxHeight = '';
+      var a = kok.getBoundingClientRect(), y = liste.offsetHeight;
+      var cubuk = document.querySelector('.sb-cubuk'), altPay = cubuk && cubuk.offsetHeight ? cubuk.offsetHeight : 0;
+      var asagi = window.innerHeight - a.bottom - altPay - 32, yukari = a.top - 100;
+      if (y > asagi && yukari > asagi) { liste.classList.add('yukari'); liste.style.maxHeight = Math.min(y, yukari) + 'px'; }
+      else liste.style.maxHeight = Math.max(160, Math.min(y, asagi)) + 'px';
+      isaretle(Math.max(0, sel.selectedIndex - bas)); liste.focus({ preventScroll: true });
+    }
+    function kapat(odak) {
+      if (liste.hidden) return;
+      liste.hidden = true; dgm.setAttribute('aria-expanded', 'false'); kok.parentNode.classList.remove('acik');
+      if (odak) dgm.focus();
+    }
+    function sec(i) { sel.selectedIndex = i + bas; sel.dispatchEvent(new Event('change', { bubbles: true })); yansit(); kapat(true); }
+    dgm.addEventListener('click', function () { if (liste.hidden) ac(); else kapat(true); });
+    dgm.addEventListener('keydown', function (e) { if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); ac(); } });
+    liste.addEventListener('click', function (e) { var s = e.target.closest('[data-i]'); if (s) sec(+s.dataset.i); });
+    liste.addEventListener('mousemove', function (e) { var s = e.target.closest('[data-i]'); if (s && +s.dataset.i !== etkin) isaretle(+s.dataset.i); });
+    liste.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown') { e.preventDefault(); isaretle(Math.min(satir.length - 1, etkin + 1)); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); isaretle(Math.max(0, etkin - 1)); }
+      else if (e.key === 'Home') { e.preventDefault(); isaretle(0); }
+      else if (e.key === 'End') { e.preventDefault(); isaretle(satir.length - 1); }
+      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sec(etkin); }
+      else if (e.key === 'Escape') { e.preventDefault(); kapat(true); }
+      else if (e.key === 'Tab') { kapat(false); }
+    });
+    document.addEventListener('click', function (e) { if (!kok.contains(e.target) && e.target !== etiket) kapat(false); });
+    yansit();
+  }
 
   /* ---------- Cilt Tipi Testi (örnek, 4 soru) ---------- */
   var SORULAR = [
@@ -140,10 +208,11 @@
     function basla() { i = 0; secim = []; soru(); }
     function soru() {
       var q = SORULAR[i];
-      kok.innerHTML = '<div class="sb-test"><h3 class="sb-test__baslik">Cilt Tipi Testi</h3><p class="sb-test__sayac">Soru ' + (i + 1) + ' / ' + SORULAR.length + '</p>' +
+      kok.innerHTML = '<div class="sb-test"><div class="sb-test__ust"><h3 class="sb-test__baslik">Cilt Tipi Testi</h3><p class="sb-test__sayac">Soru ' + (i + 1) + ' / ' + SORULAR.length + '</p></div>' +
+        '<ul class="sb-ilerleme" style="--n:' + SORULAR.length + '" aria-hidden="true">' + SORULAR.map(function (_, n) { return '<li class="' + (n <= i ? 'dolu' : '') + '"></li>'; }).join('') + '</ul>' +
         '<p class="sb-test__soru" id="ct-s' + i + '">' + q.s + '</p><div class="sb-sec" role="radiogroup" aria-labelledby="ct-s' + i + '">' + q.c.map(function (c, n) {
-          return '<label><input type="radio" name="ct" value="' + n + '"' + (secim[i] === n ? ' checked' : '') + '><span>' + c[0] + '</span></label>';
-        }).join('') + '</div>' + (i ? '<div class="sb-test__alt"><button type="button" class="sb-geri" data-t-geri>Önceki soru</button></div>' : '') + '</div>';
+          return '<label><input type="radio" name="ct" value="' + n + '"' + (secim[i] === n ? ' checked' : '') + '>' + kutu(c[0]) + '</label>';
+        }).join('') + '</div>' + (i ? '<div class="sb-test__alt"><button type="button" class="sb-geri" data-t-geri><i class="ph-light ph-arrow-left" aria-hidden="true"></i>Önceki soru</button></div>' : '') + '</div>';
     }
     function sonuc() {
       var p = { k: 0, y: 0, t: 0, h: 0 };
@@ -158,7 +227,7 @@
     kok.addEventListener('change', function (e) {
       if (e.target.name !== 'ct') return;
       secim[i] = +e.target.value;
-      setTimeout(function () { i += 1; if (i < SORULAR.length) soru(); else sonuc(); }, 160);
+      setTimeout(function () { i += 1; if (i < SORULAR.length) soru(); else sonuc(); }, 280);
     });
     kok.addEventListener('click', function (e) {
       if (e.target.closest('[data-t-geri]')) { i -= 1; soru(); }
