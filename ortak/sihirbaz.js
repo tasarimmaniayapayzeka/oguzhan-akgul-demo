@@ -127,6 +127,8 @@
     f.querySelectorAll('select').forEach(acilirKur);
   });
 
+  document.querySelectorAll('select[data-acilir]').forEach(acilirKur);
+
   /* Özel açılır liste: asıl değer gizli select'te kalır, klavyeyle de çalışır */
   function acilirKur(sel) {
     var etiket = document.querySelector('label[for="' + sel.id + '"]');
@@ -251,7 +253,7 @@
   var CEVAP = [
     ['Konsültasyonda neler konuşulur?', 'Hekim beklentinizi dinler, sağlık geçmişinizi sorar ve yüzünüzü değerlendirir. Uygulanabilecek seçenekleri, risklerini ve iyileşme sürecini anlatır. Karar vermek için ayrıca düşünebilirsiniz.'],
     ['Uygulamadan sonra ne zaman işe dönebilirim?', 'Bu, uygulamanın türüne ve bölgesine göre değişir. Size özel süreyi hekim muayenede söyler. Hangi uygulamayı merak ediyorsunuz?'],
-    ['Fiyat öğrenebilir miyim?', 'Fiyat bilgisi paylaşamıyorum. Plan kişiye göre değiştiği için bu konu muayenede görüşülür. İsterseniz randevu talebi oluşturmanıza yardımcı olabilirim.']
+    ['Fiyat öğrenebilir miyim?', 'Fiyat bilgisi paylaşamıyorum. Fiyat, size özel plana bağlıdır ve muayenede görüşülür. İsterseniz randevu talebi oluşturmanıza yardımcı olabilirim.']
   ];
   var ac = document.createElement('button');
   ac.type = 'button'; ac.className = 'sb-as-ac'; ac.setAttribute('data-asistan', ''); ac.setAttribute('aria-expanded', 'false');
@@ -307,7 +309,7 @@
   });
 
   /* ---------- Sekmeler (Yön C) ---------- */
-  document.querySelectorAll('[role="tablist"]').forEach(function (l) {
+  document.querySelectorAll('[role="tablist"]:not([data-ozel])').forEach(function (l) {
     var sek = Array.prototype.slice.call(l.querySelectorAll('[role="tab"]'));
     function sec(b, odak) {
       sek.forEach(function (x) {

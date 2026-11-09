@@ -23,10 +23,10 @@
   .pano h2 a{float:right;font-weight:400;color:var(--i)}
   .kare{position:relative;flex:1;min-height:0;overflow:hidden}
   iframe{position:absolute;left:0;top:0;border:0;background:#fff;transform-origin:0 0}
-  .sahne[data-mod="yan"]{grid-template-columns:1fr 1fr 1fr}
-  .sahne[data-mod="b"],.sahne[data-mod="c"],.sahne[data-mod="d"]{grid-template-columns:1fr}
-  .sahne[data-mod="b"] .pano:not(.pano-b),.sahne[data-mod="c"] .pano:not(.pano-c),.sahne[data-mod="d"] .pano:not(.pano-d){display:none}
-  @media (max-width:640px){.sahne[data-mod="yan"]{grid-template-columns:1fr;grid-template-rows:1fr 1fr 1fr}}
+  .sahne[data-mod="yan"]{grid-template-columns:repeat(4,1fr)}
+  .sahne[data-mod="b"],.sahne[data-mod="c"],.sahne[data-mod="d"],.sahne[data-mod="e"]{grid-template-columns:1fr}
+  .sahne[data-mod="b"] .pano:not(.pano-b),.sahne[data-mod="c"] .pano:not(.pano-c),.sahne[data-mod="d"] .pano:not(.pano-d),.sahne[data-mod="e"] .pano:not(.pano-e){display:none}
+  @media (max-width:900px){.sahne[data-mod="yan"]{grid-template-columns:repeat(2,1fr);grid-template-rows:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -37,6 +37,7 @@
     <button type="button" data-mod="b" aria-pressed="false">Yön B</button>
     <button type="button" data-mod="c" aria-pressed="false">Yön C</button>
     <button type="button" data-mod="d" aria-pressed="false">Yön D</button>
+    <button type="button" data-mod="e" aria-pressed="false">Yön E</button>
   </div>
   <div class="kume" role="group" aria-label="Ekran">
     <button type="button" data-ekran="1440" aria-pressed="true">Masaüstü</button>
@@ -47,6 +48,7 @@
   <section class="pano pano-b"><h2>B · Siyah Künye <a href="yon-b/index.html" target="_blank" rel="noopener">Tam ekran aç</a></h2><div class="kare"><iframe src="yon-b/index.html" title="Yön B Siyah Künye"></iframe></div></section>
   <section class="pano pano-c"><h2>C · Gri Taş <a href="yon-c/index.html" target="_blank" rel="noopener">Tam ekran aç</a></h2><div class="kare"><iframe src="yon-c/index.html" title="Yön C Gri Taş"></iframe></div></section>
   <section class="pano pano-d"><h2>D · Mektup <a href="yon-d/index.html" target="_blank" rel="noopener">Tam ekran aç</a></h2><div class="kare"><iframe src="yon-d/index.html" title="Yön D Mektup"></iframe></div></section>
+  <section class="pano pano-e"><h2>E · Harita <a href="yon-e/index.html" target="_blank" rel="noopener">Tam ekran aç</a></h2><div class="kare"><iframe src="yon-e/index.html" title="Yön E Harita"></iframe></div></section>
 </div>
 <script>
 (function(){
